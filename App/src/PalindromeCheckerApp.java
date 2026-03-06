@@ -1,84 +1,62 @@
+// File: UseCase13PalindromeCheckerApp.java
 import java.util.Scanner;
 
-class Node {
-    char data;
-    Node next;
+public class UseCase13PalindromeCheckerApp {
 
-    Node(char data) {
-        this.data = data;
-        this.next = null;
-    }
-}
-
-class SinglyLinkedList {
-    Node head;
-
-    void add(char data) {
-        Node newNode = new Node(data);
-        if (head == null) {
-            head = newNode;
-            return;
-        }
-        Node temp = head;
-        while (temp.next != null)
-            temp = temp.next;
-        temp.next = newNode;
+    // Algorithm 1: Reverse string and compare
+    public static boolean isPalindromeReverse(String str) {
+        String reversed = new StringBuilder(str).reverse().toString();
+        return str.equals(reversed);
     }
 
-    Node reverse(Node node) {
-        Node prev = null;
-        Node current = node;
-        while (current != null) {
-            Node nextNode = current.next;
-            current.next = prev;
-            prev = current;
-            current = nextNode;
-        }
-        return prev;
-    }
+    // Algorithm 2: Two-pointer technique
+    public static boolean isPalindromeTwoPointer(String str) {
+        int left = 0;
+        int right = str.length() - 1;
 
-    boolean isPalindrome() {
-        if (head == null || head.next == null) return true;
-
-        Node slow = head, fast = head;
-        while (fast.next != null && fast.next.next != null) {
-            slow = slow.next;
-            fast = fast.next.next;
-        }
-
-        Node secondHalf = reverse(slow.next);
-        Node firstHalf = head;
-        Node copySecondHalf = secondHalf;
-
-        boolean result = true;
-        while (secondHalf != null) {
-            if (firstHalf.data != secondHalf.data) {
-                result = false;
-                break;
+        while (left < right) {
+            if (str.charAt(left) != str.charAt(right)) {
+                return false;
             }
-            firstHalf = firstHalf.next;
-            secondHalf = secondHalf.next;
+            left++;
+            right--;
         }
-
-        slow.next = reverse(copySecondHalf);
-        return result;
+        return true;
     }
-}
 
-public class PalindromeCheckerApp {
+    // Algorithm 3: Recursive approach
+    public static boolean isPalindromeRecursive(String str) {
+        if (str.length() <= 1) return true;
+        if (str.charAt(0) != str.charAt(str.length() - 1)) return false;
+        return isPalindromeRecursive(str.substring(1, str.length() - 1));
+    }
+
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        String input = sc.nextLine();
+        Scanner scanner = new Scanner(System.in);
 
-        SinglyLinkedList list = new SinglyLinkedList();
-        for (int i = 0; i < input.length(); i++) {
-            list.add(input.charAt(i));
-        }
+        System.out.println("=== UC13: Palindrome Checker Performance Comparison ===");
+        System.out.print("Enter a string to check for palindrome: ");
+        String input = scanner.nextLine();
 
-        if (list.isPalindrome()) {
-            System.out.println("Palindrome");
-        } else {
-            System.out.println("Not a Palindrome");
-        }
+        // Algorithm 1 Timing
+        long startTime1 = System.nanoTime();
+        boolean result1 = isPalindromeReverse(input);
+        long endTime1 = System.nanoTime();
+
+        // Algorithm 2 Timing
+        long startTime2 = System.nanoTime();
+        boolean result2 = isPalindromeTwoPointer(input);
+        long endTime2 = System.nanoTime();
+
+        // Algorithm 3 Timing
+        long startTime3 = System.nanoTime();
+        boolean result3 = isPalindromeRecursive(input);
+        long endTime3 = System.nanoTime();
+
+        // Display results
+        System.out.println("\nPalindrome Check Results:");
+        System.out.println("1. Reverse & Compare: " + result1 + " (Time: " + (endTime1 - startTime1) + " ns)");
+        System.out.println("2. Two-Pointer:       " + result2 + " (Time: " + (endTime2 - startTime2) + " ns)");
+        System.out.println("3. Recursive:         " + result3 + " (Time: " + (endTime3 - startTime3) + " ns)");
     }
 }
